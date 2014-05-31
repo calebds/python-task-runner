@@ -1,0 +1,23 @@
+import os, sys
+
+curr_dir = os.getcwd()
+file_dir = os.path.dirname(os.path.realpath(__file__))
+file_par_dir = os.path.abspath(os.path.join(file_dir, os.pardir))
+
+if curr_dir != file_par_dir:
+    print 'This script must be run from the app dir.'
+    exit()
+
+# add app to path
+sys.path.append(curr_dir)
+
+if len(sys.argv) > 1:
+    task_module = sys.argv[1].replace('/', '.')[:-3]
+    task = __import__(task_module, fromlist=[''])
+    keywords = {}
+    for arg in sys.argv[2:]:
+        tokens = arg.split('=')
+        keywords[tokens[0]] = tokens[1]
+    task.run(**keywords)
+else:
+    print 'No task specified.'
